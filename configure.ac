@@ -418,14 +418,7 @@ AS_IF([test "x$BINDINGS_CXX" = xyes],
 	[sr_ruby_missing=],
 	[sr_ruby_missing='C++ bindings'])
 
-AC_PATH_PROGS(RUBY, ["${RUBY-ruby}"], [])
-AS_IF([test "x$RUBY" != x],
-	AC_MSG_CHECKING([for Ruby version])
-    [RUBY_VERSION=`$RUBY -e 'puts RUBY_VERSION'`]
-    AC_MSG_RESULT([$RUBY_VERSION])
-    [RUBY_DLEXT=`$RUBY -rrbconfig -e 'puts RbConfig::CONFIG[["DLEXT"]]'`]
-    AC_SUBST(RUBY_DLEXT))
-
+AX_RUBY_EXT
 AS_IF([test "x$RUBY" = x],
 	[SR_APPEND([sr_ruby_missing], [', '], [Ruby])])
 
@@ -520,7 +513,7 @@ PKG_CHECK_MODULES([TESTS], [$SR_PKGLIBS_TESTS glib-2.0 $SR_PKGLIBS])
 AM_COND_IF([BINDINGS_CXX], [
 	PKG_CHECK_MODULES([LIBSIGROKCXX], [$SR_PKGLIBS_CXX])
 	PKG_CHECK_MODULES([PYSIGROK], [$SR_PKGLIBS_PYTHON $SR_PKGLIBS_CXX])
-	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX], [AC_SUBST(RBSIGROK_EXTDIR, "lib/$($PKG_CONFIG --variable=sitearch $SR_PKGLIBS_RUBY)/$($PKG_CONFIG --variable=RUBY_BASE_NAME $SR_PKGLIBS_RUBY)/vendor_ruby/$($PKG_CONFIG --variable=ruby_version $SR_PKGLIBS_RUBY)")])
+	PKG_CHECK_MODULES([RBSIGROK], [$SR_PKGLIBS_RUBY $SR_PKGLIBS_CXX])
 ])
 
 # Check for specific libusb features, now that we know the CFLAGS.
